@@ -74,16 +74,16 @@ levels(bh$town) = c(levels(bh$town), "other")
 bh$town[bh$town %in% names(table(bh$town))[table(bh$town)<13]] <- "other"
 bh$town <-as.factor(as.character(bh$town))
 
-bh$lstat =log(bh$lstat)
 # bh$crim = log(bh$crim)
 bh$zn = sqrt(bh$zn)
 bh$nox_squre = bh$nox^7
 bh$rm_squre <- bh$rm^7
 bh$age_sqrt = sqrt(bh$age)
-bh$dis_2 = 1/bh$dis
-bh$lstat_squre <- log(bh$lstat)
+bh$dis = 1/bh$dis
+bh$lstat =log(bh$lstat)
+bh$lstat_square <- (bh$lstat)^2
 bh$tax_log = log(bh$tax)
-bh$b_squre = bh$b^55
+bh$b_squre = bh$b^58
 bh$rm_lstat <- bh$rm * bh$lstat
 bh$rm_dis <- bh$rm / bh$dis
 bh$nox_dis <- bh$nox * bh$dis
@@ -116,6 +116,26 @@ for(i in 1:5) {
   # 保存預測結果
   pred.svm = c(pred.svm, predict(m.svm_pca, test_pca))
 }
+
+# pred.rf=NULL
+# for(i in 1:5) {
+#   
+#   trn = bh[-i.test.list[[i]], ]
+#   test = bh[i.test.list[[i]], ]
+#   trn_pca <- trn [,-5]
+#   test_pca <- test [,-5]
+#   
+#   # Append target variable back only after PCA transformation
+#   trn_pca$cmedv <- trn$cmedv
+#   test_pca$cmedv <- test$cmedv
+#   
+#   
+#   # SVM model on PCA-transformed data
+#   m.rf_pca <- randomForest(cmedv ~ .,trn_pca)
+#   
+#   # 保存預測結果
+#   pred.rf = c(pred.rf, predict(m.rf_pca, test_pca))
+# }
 
 ###### 填入所使用的方法，評估時使用 ####### 
 method = "svm"
