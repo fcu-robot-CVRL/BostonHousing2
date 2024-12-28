@@ -107,8 +107,6 @@ for(i in 1:5) {
   
   trn = bh[-i.test.list[[i]], ]
   test = bh[i.test.list[[i]], ]
-  print(head(trn))
-  plot(density(trn$cmedv))
   trn_pca <- trn [,-5]
   test_pca <- test [,-5]
   
@@ -122,12 +120,12 @@ for(i in 1:5) {
     data = trn_pca, 
     kernal = "radial",
     ranges = list(
-      cost = c(10.56), 
-      gamma = c(0.017),
-      epsilon = c(0.05) )
+      cost = c(9.5), 
+      gamma = c(0.016),
+      epsilon = c(0.09) )
   )
   best.model <- tune.svm$best.model
-  
+  print(cal.r2( predict(best.model, trn_pca), trn_pca$cmedv))
   print(summary(best.model))
   # SVM model on PCA-transformed data
   # m.svm_pca <- svm(cmedv ~ .,trn_pca)
