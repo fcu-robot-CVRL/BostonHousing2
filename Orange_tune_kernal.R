@@ -71,28 +71,40 @@ rm(BostonHousing2, m.gbm, m.rf, m.svm, pred.list, test, trn,
 data("BostonHousing2")
 bh <- BostonHousing2[,-5]
 levels(bh$town) = c(levels(bh$town), "other")
-bh$town[bh$town %in% names(table(bh$town))[table(bh$town)<13]] <- "other"
+bh$town[bh$town %in% names(table(bh$town))[table(bh$town)<19]] <- "other"
 bh$town <-as.factor(as.character(bh$town))
 
 # bh$crim = log(bh$crim)
 bh$zn = sqrt(bh$zn)
-bh$nox_squre = bh$nox^7
-bh$rm_squre <- bh$rm^7
-bh$age_sqrt = sqrt(bh$age)
+bh$nox = bh$nox^4
+bh$rm_squre = bh$rm^5
+bh$age_log = log(bh$age)
 bh$dis = 1/bh$dis
-bh$lstat =log(bh$lstat)
-bh$ptratio_log = log(bh$ptratio)
-bh$lstat_square <- (bh$lstat)^2
+bh$lstat = log(bh$lstat)
+bh$lstat_square = (bh$lstat)^2
+# bh$ptratio_log = log(bh$ptratio) # 0.1347604
+bh$ptratio_sqrt = sqrt(bh$ptratio) # 0.1347926
 bh$tax_log = log(bh$tax)
-bh$b_squre = bh$b^58
-bh$rm_lstat <- bh$rm * bh$lstat
-bh$rm_dis <- bh$rm / bh$dis
-bh$nox_dis <- bh$nox * bh$dis
-bh$age_rad <- bh$age * bh$rad
-bh$tax_ptratio <- bh$tax * bh$ptratio
+bh$b_squre = bh$b^26
+bh$rm_lstat = bh$rm * (bh$lstat^2)
+bh$rm_dis = bh$rm / log(bh$dis)
+bh$nox_dis = bh$nox * bh$dis
+bh$age_rad = (bh$age)^3 / bh$rad
+bh$tax_ptratio = (bh$tax * bh$ptratio)^33 # 0.1385654
+bh$rm_b = bh$rm * bh$b # 0.1385908
+bh$rm_ptratio = sqrt(bh$rm) * (bh$ptratio)^2 # 0.1394113
+bh$rm_tax = (bh$rm)^2 / (bh$tax)^3 # 0.1414302
+bh$rm_rad = (bh$rm)^5 * (bh$rad)^6 # 0.1421407
+# bh$rm_age = bh$rm / bh$age
+bh$rm_nox = ((bh$rm) * (bh$nox))^3 # 0.1425115
+bh$rm_indus = sqrt(bh$rm) * (bh$indus)^2 # 0.1433560
+bh$nox_rad = sqrt(bh$nox * bh$rad) # 0.1433617
+bh$nox_tax = bh$nox * bh$tax # 0.1434119
+bh$nox_ptratio = (bh$ptratio)^4 / sqrt(bh$nox) # 0.1438691
+bh$nox_b = bh$nox * bh$b # 0.1440213
+bh$nox_lstat = bh$nox * sqrt(bh$lstat) # 0.1440598
 
-
-vars <- c("rm", "lstat", "dis", "nox", "tax", "ptratio")
+vars <- c("rm", "lstat", "dis", "nox", "tax", "ptratio", "b", "rad", "indus")
 for (i in 1:(length(vars)-1)) {
   for (j in (i+1):length(vars)) {
     colname <- paste(vars[i], vars[j], sep = "_x_")
