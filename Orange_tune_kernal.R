@@ -1,6 +1,6 @@
 # 載入必要套件
 
-pkg.list = c("mlbench", "e1071", "randomForest", "gbm", "caret", "dplyr", "gtools")
+pkg.list = c("mlbench", "e1071", "randomForest", "gbm", "caret", "dplyr", "gtools","UBL","DataExplorer")
 
 for(pkg in pkg.list) {
   if(!require(pkg, character.only = TRUE)) {
@@ -81,6 +81,7 @@ bh$rm_squre <- bh$rm^7
 bh$age_sqrt = sqrt(bh$age)
 bh$dis = 1/bh$dis
 bh$lstat =log(bh$lstat)
+bh$ptratio_log = log(bh$ptratio)
 bh$lstat_square <- (bh$lstat)^2
 bh$tax_log = log(bh$tax)
 bh$b_squre = bh$b^58
@@ -89,6 +90,8 @@ bh$rm_dis <- bh$rm / bh$dis
 bh$nox_dis <- bh$nox * bh$dis
 bh$age_rad <- bh$age * bh$rad
 bh$tax_ptratio <- bh$tax * bh$ptratio
+
+
 vars <- c("rm", "lstat", "dis", "nox", "tax", "ptratio")
 for (i in 1:(length(vars)-1)) {
   for (j in (i+1):length(vars)) {
@@ -104,7 +107,8 @@ for(i in 1:5) {
   
   trn = bh[-i.test.list[[i]], ]
   test = bh[i.test.list[[i]], ]
-  
+  print(head(trn))
+  plot(density(trn$cmedv))
   trn_pca <- trn [,-5]
   test_pca <- test [,-5]
   
@@ -118,11 +122,13 @@ for(i in 1:5) {
     data = trn_pca, 
     kernal = "radial",
     ranges = list(
-      cost = c(10,11.3), 
-      gamma = c(0.009,0.016))
+      cost = c(10.56), 
+      gamma = c(0.017),
+      epsilon = c(0.05) )
   )
   best.model <- tune.svm$best.model
   
+  print(summary(best.model))
   # SVM model on PCA-transformed data
   # m.svm_pca <- svm(cmedv ~ .,trn_pca)
   # m.rf_pca <- randomForest(cmedv ~ ., trn_pca)
