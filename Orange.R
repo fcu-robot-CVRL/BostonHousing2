@@ -109,8 +109,9 @@ bh$lstat_tax=log(bh$lstat*bh$tax) # 0.1463125
 bh$lstat_age=((bh$lstat)^2*(bh$age)) # 0.1468442
 bh$lstat_b=bh$lstat*(bh$b)^2 # 0.1477080
 bh$b_age=sqrt(bh$b*bh$age) # 0.1477817
-bh$b_ptratio=sqrt(bh$b*bh$ptratio) # 0.1478148
- # 0.1464987
+bh$b_ptratio=sqrt(bh$b*bh$ptratio) # 0.1479654
+bh$b_dis=sqrt(bh$b*bh$dis) # 0.1481056
+bh$b_tax=(bh$b)*(bh$tax)^6 # 0.1482807
 
 # vars <- c("rm", "lstat", "dis", "nox", "tax", "ptratio", "b", "rad", "indus")
 # for (i in 1:(length(vars)-1)) {
