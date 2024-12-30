@@ -94,15 +94,15 @@ bh$tax_ptratio = (bh$tax * bh$ptratio)^4 # 0.1040069
 bh$rm_b = sqrt(bh$rm * bh$b) # 0.1042415
 bh$rm_ptratio = sqrt(bh$rm) * (bh$ptratio)^14 # 0.1053913
 bh$rm_tax = (bh$rm)^2 / (bh$tax)^3 # 0.1051964
-bh$rm_rad = (bh$rm) * (bh$rad) # 
+bh$rm_rad = (bh$rm * bh$rad)^65 # 0.1098451
 # bh$rm_age = bh$rm / bh$age
-bh$rm_nox = ((bh$rm) * (bh$nox))^3 # 
-bh$rm_indus = sqrt(bh$rm) * (bh$indus)^2 # 
+bh$rm_nox = ((bh$rm) * (bh$nox))^2 # 0.1102093
+bh$rm_indus = sqrt(bh$rm) * (bh$indus) # 0.1102874
 bh$nox_rad = sqrt(bh$nox * bh$rad) # 
-bh$nox_tax = bh$nox * bh$tax # 
-bh$nox_ptratio = (bh$ptratio)^4 / sqrt(bh$nox) # 
-bh$nox_b = bh$nox * bh$b # 
-bh$nox_lstat = bh$nox * sqrt(bh$lstat) # 
+bh$nox_tax = (bh$nox * bh$tax)^3 # 0.1105945
+bh$nox_ptratio = (bh$ptratio) / log(bh$nox) # 0.1114642
+bh$nox_b = sqrt(bh$nox * bh$b) # 0.1115045
+bh$nox_lstat = bh$nox * log(bh$lstat) # 0.1121480
 bh$zn_lstat=bh$zn*(bh$lstat)^2 # 
 
 # vars <- c("rm", "lstat", "dis", "nox", "tax", "ptratio", "b", "rad", "indus")
