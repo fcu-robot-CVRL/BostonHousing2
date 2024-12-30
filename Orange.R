@@ -135,7 +135,7 @@ for(i in 1:5) {
   
   
   # SVM model on PCA-transformed data
-  m.svm_pca <- svm(cmedv ~ .,trn_pca, kernal = "radial", cost = 6.1, gamma = 0.019, epsilon = 0.064 )
+  m.svm_pca <- svm(cmedv ~ .,trn_pca, kernal = "radial", cost = 6.445, gamma = 0.017, epsilon = 0.066)
   
   # 保存預測結果
   pred.svm = c(pred.svm, predict(m.svm_pca, test_pca))
