@@ -74,7 +74,7 @@ levels(bh$town) = c(levels(bh$town), "other")
 bh$town[bh$town %in% names(table(bh$town))[table(bh$town)<13]] <- "other"
 bh$town <-as.factor(as.character(bh$town))
 
-# bh$crim = log(bh$crim)
+# bh$crim = log(bh$crim) # 0.1021635
 bh$zn = sqrt(bh$zn)
 bh$nox = bh$nox^4
 bh$rm_squre = bh$rm^5
@@ -82,35 +82,36 @@ bh$age_log = log(bh$age)
 bh$dis = 1/bh$dis
 bh$lstat = log(bh$lstat)
 bh$lstat_square = (bh$lstat)^2
-# bh$ptratio_log = log(bh$ptratio) # 0.1347604
-bh$ptratio_sqrt = sqrt(bh$ptratio) # 0.1347926
+# bh$ptratio_log = log(bh$ptratio) 
+bh$ptratio_sqrt = sqrt(bh$ptratio) 
 bh$tax_log = log(bh$tax)
 bh$b_squre = bh$b^26
-bh$rm_lstat = bh$rm * (bh$lstat^2)
+bh$rm_lstat = bh$rm * (bh$lstat)^2
 bh$rm_dis = bh$rm / log(bh$dis)
 bh$nox_dis = bh$nox * bh$dis
-bh$age_rad = (bh$age)^3 / bh$rad
-bh$tax_ptratio = (bh$tax * bh$ptratio)^33 # 0.1385654
-bh$rm_b = bh$rm * bh$b # 0.1385908
-bh$rm_ptratio = sqrt(bh$rm) * (bh$ptratio)^2 # 0.1394113
-bh$rm_tax = (bh$rm)^2 / (bh$tax)^3 # 0.1414302
-bh$rm_rad = (bh$rm)^5 * (bh$rad)^6 # 0.1421407
+bh$age_rad = (bh$age)^4 / bh$rad # 0.1023726
+bh$tax_ptratio = (bh$tax * bh$ptratio)^4 # 0.1040069 
+bh$rm_b = sqrt(bh$rm * bh$b) # 0.1042415
+bh$rm_ptratio = sqrt(bh$rm) * (bh$ptratio)^14 # 0.1053913
+bh$rm_tax = (bh$rm)^2 / (bh$tax)^3 # 0.1051964
+bh$rm_rad = (bh$rm) * (bh$rad) # 
 # bh$rm_age = bh$rm / bh$age
-bh$rm_nox = ((bh$rm) * (bh$nox))^3 # 0.1425115
-bh$rm_indus = sqrt(bh$rm) * (bh$indus)^2 # 0.1433560
-bh$nox_rad = sqrt(bh$nox * bh$rad) # 0.1433617
-bh$nox_tax = bh$nox * bh$tax # 0.1434119
-bh$nox_ptratio = (bh$ptratio)^4 / sqrt(bh$nox) # 0.1438691
-bh$nox_b = bh$nox * bh$b # 0.1440213
-bh$nox_lstat = bh$nox * sqrt(bh$lstat) # 0.1440598
+bh$rm_nox = ((bh$rm) * (bh$nox))^3 # 
+bh$rm_indus = sqrt(bh$rm) * (bh$indus)^2 # 
+bh$nox_rad = sqrt(bh$nox * bh$rad) # 
+bh$nox_tax = bh$nox * bh$tax # 
+bh$nox_ptratio = (bh$ptratio)^4 / sqrt(bh$nox) # 
+bh$nox_b = bh$nox * bh$b # 
+bh$nox_lstat = bh$nox * sqrt(bh$lstat) # 
+bh$zn_lstat=bh$zn*(bh$lstat)^2 # 
 
-vars <- c("rm", "lstat", "dis", "nox", "tax", "ptratio")
-for (i in 1:(length(vars)-1)) {
-  for (j in (i+1):length(vars)) {
-    colname <- paste(vars[i], vars[j], sep = "_x_")
-    bh[[colname]] <- bh[[vars[i]]] * bh[[vars[j]]]
-  }
-}
+# vars <- c("rm", "lstat", "dis", "nox", "tax", "ptratio", "b", "rad", "indus")
+# for (i in 1:(length(vars)-1)) {
+#   for (j in (i+1):length(vars)) {
+#     colname <- paste(vars[i], vars[j], sep = "_x_")
+#     bh[[colname]] <- bh[[vars[i]]] * bh[[vars[j]]]
+#   }
+# }
 
 pred.svm=NULL
 for(i in 1:5) {
