@@ -81,30 +81,38 @@ bh$nox = bh$nox^4
 bh$rm_squre = bh$rm^5
 bh$age_log = log(bh$age)
 bh$dis = 1/bh$dis
-bh$lstat = log(bh$lstat)
+bh$lstat = log(bh$lstat) # 0.1453831
 bh$lstat_square = (bh$lstat)^2
 # bh$ptratio_log = log(bh$ptratio) 
 bh$ptratio_sqrt = sqrt(bh$ptratio) 
 bh$tax_log = log(bh$tax)
-bh$b_squre = bh$b^26
+bh$b_squre = bh$b^25 # 0.1453831
 bh$rm_lstat = bh$rm * (bh$lstat)^2
 bh$rm_dis = bh$rm / log(bh$dis)
 bh$nox_dis = bh$nox * bh$dis
-bh$age_rad = (bh$age)^4 / bh$rad # 0.1023726
-bh$tax_ptratio = (bh$tax * bh$ptratio)^4 # 0.1040069 
+bh$age_rad = (bh$age)^3 / bh$rad # 0.1453556
+bh$tax_ptratio = (bh$tax * bh$ptratio)^9 # 0.1452111
 bh$rm_b = sqrt(bh$rm * bh$b) # 0.1042415
-bh$rm_ptratio = sqrt(bh$rm) * (bh$ptratio)^14 # 0.1053913
-bh$rm_tax = (bh$rm)^2 / (bh$tax)^3 # 0.1051964
-bh$rm_rad = (bh$rm * bh$rad)^65 # 0.1098451
+bh$rm_ptratio = sqrt(bh$rm) * (bh$ptratio)^16 # 0.1451837
+bh$rm_tax = (bh$rm) / (bh$tax)^3 # 0.1451524
+bh$rm_rad = (bh$rm * bh$rad)^62 # 0.1448899
 # bh$rm_age = bh$rm / bh$age
-bh$rm_nox = ((bh$rm) * (bh$nox))^2 # 0.1102093
+bh$rm_nox = ((bh$rm) * (bh$nox))^3 # 0.1448831
 bh$rm_indus = sqrt(bh$rm) * (bh$indus) # 0.1102874
-bh$nox_rad = sqrt(bh$nox * bh$rad) # 
-bh$nox_tax = (bh$nox * bh$tax)^3 # 0.1105945
-bh$nox_ptratio = (bh$ptratio) / log(bh$nox) # 0.1114642
+# bh$nox_rad = sqrt(bh$nox * bh$rad) # 0.1464987
+# bh$nox_tax = (bh$nox * bh$tax)^2 # 0.1448071
+# bh$nox_ptratio = (bh$ptratio) / log(bh$nox) # 0.1463714
 bh$nox_b = sqrt(bh$nox * bh$b) # 0.1115045
 bh$nox_lstat = bh$nox * log(bh$lstat) # 0.1121480
-bh$zn_lstat=bh$zn*(bh$lstat)^2 # 
+bh$zn_lstat = (bh$zn)^3 * bh$lstat # 0.1445090
+bh$lstat_ptratio=log(bh$lstat*bh$ptratio) # 0.1461443
+bh$lstat_tax=log(bh$lstat*bh$tax) # 0.1463125
+bh$lstat_age=((bh$lstat)^2*(bh$age)) # 0.1468442
+bh$lstat_b=bh$lstat*(bh$b)^2 # 0.1477080
+bh$b_age=sqrt(bh$b*bh$age) # 0.1477817
+bh$b_ptratio=sqrt(bh$b*bh$ptratio) # 0.1479654
+bh$b_dis=sqrt(bh$b*bh$dis) # 0.1481056
+bh$b_tax=(bh$b)*(bh$tax)^6 # 0.1482807
 
 # vars <- c("rm", "lstat", "dis", "nox", "tax", "ptratio", "b", "rad", "indus")
 # for (i in 1:(length(vars)-1)) {
@@ -155,17 +163,17 @@ pred.svm = NULL
 library(ggplot2)
 
 # 定義參數範圍
-cost_values <- seq(5, 6.4, by = 0.2)       # cost 範圍
-gamma_values <- seq(0.01, 0.05, by = 0.01) # gamma 範圍
-epsilon_values <- seq(0.06, 0.07, by = 0.002)  # epsilon 範圍
+cost_values <- seq(6.40, 6.45, by = 0.01)       # cost 範圍
+gamma_values <- seq(0.016, 0.017, by = 0.001) # gamma 範圍
+epsilon_values <- seq(0.0657, 0.0663, by = 0.0001)  # epsilon 範圍
 
 # 初始化結果儲存
 results <- data.frame(cost = numeric(), gamma = numeric(), epsilon = numeric(), r2 = numeric())
 
 # 測試所有參數組合
-for (cost in cost_values) {
-  for (gamma in 0.02) {
-    for (epsilon in epsilon_values) {
+for (cost in 6.44) {
+  for (gamma in 0.017) {
+    for (epsilon in 0.066) {
       pred.svm <- NULL
       
       for (i in 1:5) {
