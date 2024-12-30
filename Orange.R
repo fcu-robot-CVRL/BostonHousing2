@@ -71,7 +71,7 @@ rm(BostonHousing2, m.gbm, m.rf, m.svm, pred.list, test, trn,
 data("BostonHousing2")
 bh <- BostonHousing2[,-5]
 levels(bh$town) = c(levels(bh$town), "other")
-bh$town[bh$town %in% names(table(bh$town))[table(bh$town)<13]] <- "other"
+bh$town[bh$town %in% names(table(bh$town))[table(bh$town)<19]] <- "other"
 bh$town <-as.factor(as.character(bh$town))
 
 # bh$crim = log(bh$crim) # 0.1021635
