@@ -1,4 +1,5 @@
 # 載入必要套件
+library(ggplot2)
 
 pkg.list = c("mlbench", "e1071", "randomForest", "gbm", "caret", "dplyr", "gtools","UBL","DataExplorer")
 
@@ -74,7 +75,7 @@ levels(bh$town) = c(levels(bh$town), "other")
 bh$town[bh$town %in% names(table(bh$town))[table(bh$town)<19]] <- "other"
 bh$town <-as.factor(as.character(bh$town))
 
-# bh$crim = log(bh$crim)
+# bh$crim = log(bh$crim) # 0.1021635
 bh$zn = sqrt(bh$zn)
 bh$nox = bh$nox^4
 bh$rm_squre = bh$rm^5
@@ -82,72 +83,128 @@ bh$age_log = log(bh$age)
 bh$dis = 1/bh$dis
 bh$lstat = log(bh$lstat)
 bh$lstat_square = (bh$lstat)^2
-# bh$ptratio_log = log(bh$ptratio) # 0.1347604
-bh$ptratio_sqrt = sqrt(bh$ptratio) # 0.1347926
+# bh$ptratio_log = log(bh$ptratio) 
+bh$ptratio_sqrt = sqrt(bh$ptratio) 
 bh$tax_log = log(bh$tax)
 bh$b_squre = bh$b^26
-bh$rm_lstat = bh$rm * (bh$lstat^2)
+bh$rm_lstat = bh$rm * (bh$lstat)^2
 bh$rm_dis = bh$rm / log(bh$dis)
 bh$nox_dis = bh$nox * bh$dis
-bh$age_rad = (bh$age)^3 / bh$rad
-bh$tax_ptratio = (bh$tax * bh$ptratio)^33 # 0.1385654
-bh$rm_b = bh$rm * bh$b # 0.1385908
-bh$rm_ptratio = sqrt(bh$rm) * (bh$ptratio)^2 # 0.1394113
-bh$rm_tax = (bh$rm)^2 / (bh$tax)^3 # 0.1414302
-bh$rm_rad = (bh$rm)^5 * (bh$rad)^6 # 0.1421407
+bh$age_rad = (bh$age)^4 / bh$rad # 0.1023726
+bh$tax_ptratio = (bh$tax * bh$ptratio)^4 # 0.1040069 
+bh$rm_b = sqrt(bh$rm * bh$b) # 0.1042415
+bh$rm_ptratio = sqrt(bh$rm) * (bh$ptratio)^14 # 0.1053913
+bh$rm_tax = (bh$rm)^2 / (bh$tax)^3 # 0.1051964
+bh$rm_rad = (bh$rm * bh$rad)^65 # 0.1098451
 # bh$rm_age = bh$rm / bh$age
-bh$rm_nox = ((bh$rm) * (bh$nox))^3 # 0.1425115
-bh$rm_indus = sqrt(bh$rm) * (bh$indus)^2 # 0.1433560
-bh$nox_rad = sqrt(bh$nox * bh$rad) # 0.1433617
-bh$nox_tax = bh$nox * bh$tax # 0.1434119
-bh$nox_ptratio = (bh$ptratio)^4 / sqrt(bh$nox) # 0.1438691
-bh$nox_b = bh$nox * bh$b # 0.1440213
-bh$nox_lstat = bh$nox * sqrt(bh$lstat) # 0.1440598
+bh$rm_nox = ((bh$rm) * (bh$nox))^2 # 0.1102093
+bh$rm_indus = sqrt(bh$rm) * (bh$indus) # 0.1102874
+bh$nox_rad = sqrt(bh$nox * bh$rad) # 
+bh$nox_tax = (bh$nox * bh$tax)^3 # 0.1105945
+bh$nox_ptratio = (bh$ptratio) / log(bh$nox) # 0.1114642
+bh$nox_b = sqrt(bh$nox * bh$b) # 0.1115045
+bh$nox_lstat = bh$nox * log(bh$lstat) # 0.1121480
+bh$zn_lstat=bh$zn*(bh$lstat)^2 # 
 
-vars <- c("rm", "lstat", "dis", "nox", "tax", "ptratio", "b", "rad", "indus")
-for (i in 1:(length(vars)-1)) {
-  for (j in (i+1):length(vars)) {
-    colname <- paste(vars[i], vars[j], sep = "_x_")
-    bh[[colname]] <- bh[[vars[i]]] * bh[[vars[j]]]
-  }
-}
+# vars <- c("rm", "lstat", "dis", "nox", "tax", "ptratio", "b", "rad", "indus")
+# for (i in 1:(length(vars)-1)) {
+#   for (j in (i+1):length(vars)) {
+#     colname <- paste(vars[i], vars[j], sep = "_x_")
+#     bh[[colname]] <- bh[[vars[i]]] * bh[[vars[j]]]
+#   }
+# }
 
 pred.svm = NULL
 # pred.rf = NULL
 # pred.gbm = NULL
-for(i in 1:5) {
-  
-  trn = bh[-i.test.list[[i]], ]
-  test = bh[i.test.list[[i]], ]
-  trn_pca <- trn [,-5]
-  test_pca <- test [,-5]
-  
-  # Append target variable back only after PCA transformation
-  trn_pca$cmedv <- trn$cmedv
-  test_pca$cmedv <- test$cmedv
-  
-  tune.svm <- tune(
-    svm, 
-    cmedv ~ ., 
-    data = trn_pca, 
-    kernal = "radial",
-    ranges = list(
-      cost = c(9.5), 
-      gamma = c(0.016),
-      epsilon = c(0.09) )
-  )
-  best.model <- tune.svm$best.model
-  print(cal.r2( predict(best.model, trn_pca), trn_pca$cmedv))
-  print(summary(best.model))
-  # SVM model on PCA-transformed data
-  # m.svm_pca <- svm(cmedv ~ .,trn_pca)
-  # m.rf_pca <- randomForest(cmedv ~ ., trn_pca)
-  # m.gbm_pca <- gbm(cmedv ~ ., data = trn_pca)
-  # 保存預測結果
-  pred.svm = c(pred.svm, predict(best.model, test_pca))
-  # pred.rf = c(pred.rf, predict(m.rf_pca, test_pca))
-  # pred.gbm = c(pred.gbm, predict(m.gbm_pca, test_pca))
+# for(i in 1:5) {
+#   
+#   trn = bh[-i.test.list[[i]], ]
+#   test = bh[i.test.list[[i]], ]
+#   trn_pca <- trn [,-5]
+#   test_pca <- test [,-5]
+#   
+#   # Append target variable back only after PCA transformation
+#   trn_pca$cmedv <- trn$cmedv
+#   test_pca$cmedv <- test$cmedv
+#   
+#   # tune.svm <- tune(
+#   #   svm, 
+#   #   cmedv ~ ., 
+#   #   data = trn_pca, 
+#   #   kernal = "radial",
+#   #   ranges = list(
+#   #     cost = c(8.5), 
+#   #     gamma = c(0.01),
+#   #     epsilon = c(0.077) )
+#   # )
+#   tune.svm <- svm(cmedv ~ ., trn_pca, kernal = "radial", cost = 8.71, gamma = 0.01, epsilon = 0.0771)
+#   # best.model <- tune.svm$best.model
+#   # print(cal.r2( predict(best.model, trn_pca), trn_pca$cmedv))
+#   # print(summary(best.model))
+#   # SVM model on PCA-transformed data
+#   # m.svm_pca <- svm(cmedv ~ .,trn_pca)
+#   # m.rf_pca <- randomForest(cmedv ~ ., trn_pca)
+#   # m.gbm_pca <- gbm(cmedv ~ ., data = trn_pca)
+#   # 保存預測結果
+#   pred.svm = c(pred.svm, predict(tune.svm, test_pca))
+#   # pred.rf = c(pred.rf, predict(m.rf_pca, test_pca))
+#   # pred.gbm = c(pred.gbm, predict(m.gbm_pca, test_pca))
+# }
+
+library(ggplot2)
+
+# 定義參數範圍
+cost_values <- seq(5, 6.4, by = 0.2)       # cost 範圍
+gamma_values <- seq(0.01, 0.05, by = 0.01) # gamma 範圍
+epsilon_values <- seq(0.06, 0.07, by = 0.002)  # epsilon 範圍
+
+# 初始化結果儲存
+results <- data.frame(cost = numeric(), gamma = numeric(), epsilon = numeric(), r2 = numeric())
+
+# 測試所有參數組合
+for (cost in cost_values) {
+  for (gamma in 0.02) {
+    for (epsilon in epsilon_values) {
+      pred.svm <- NULL
+      
+      for (i in 1:5) {
+        trn <- bh[-i.test.list[[i]], ]
+        test <- bh[i.test.list[[i]], ]
+        trn_pca <- trn[, -5]
+        test_pca <- test[, -5]
+        
+        # Append target variable back only after PCA transformation
+        trn_pca$cmedv <- trn$cmedv
+        test_pca$cmedv <- test$cmedv
+        
+        # 訓練模型
+        model <- svm(cmedv ~ ., data = trn_pca, kernel = "radial", cost = cost, gamma = gamma, epsilon = epsilon)
+        
+        # 保存預測結果
+        pred.svm <- c(pred.svm, predict(model, test_pca))
+      }
+      
+      # 計算 R² 並記錄
+      r2 <- cal.r2(pred.svm, actual)
+      results <- rbind(results, data.frame(cost = cost, gamma = gamma, epsilon = epsilon, r2 = r2))
+    }
+  }
 }
+
+# 繪製 R² 隨 cost、gamma 或 epsilon 的變化圖
+# 以 cost 為橫軸，R² 為縱軸，分組顯示 gamma 和 epsilon 的效果
+ggplot(results, aes(x = cost, y = r2, color = factor(gamma), shape = factor(epsilon))) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  labs(title = "Cost, Gamma, and Epsilon vs R² for SVM Model",
+       x = "Cost",
+       y = "R²",
+       color = "Gamma",
+       shape = "Epsilon") +
+  theme_minimal()
+
+
 
 # pred.rf=NULL
 # for(i in 1:5) {
