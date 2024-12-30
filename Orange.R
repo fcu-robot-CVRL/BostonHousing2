@@ -80,7 +80,7 @@ bh$nox = bh$nox^4
 bh$rm_squre = bh$rm^5
 bh$age_log = log(bh$age)
 bh$dis = 1/bh$dis
-bh$lstat = log(bh$lstat)
+bh$lstat = log(bh$lstat) # 0.1453831
 bh$lstat_square = (bh$lstat)^2
 # bh$ptratio_log = log(bh$ptratio) 
 bh$ptratio_sqrt = sqrt(bh$ptratio) 
@@ -104,6 +104,9 @@ bh$nox_ptratio = (bh$ptratio) / log(bh$nox) # 0.1114642
 bh$nox_b = sqrt(bh$nox * bh$b) # 0.1115045
 bh$nox_lstat = bh$nox * log(bh$lstat) # 0.1121480
 bh$zn_lstat = (bh$zn)^3 * bh$lstat # 0.1445090
+bh$lstat_ptratio=log(bh$lstat*bh$ptratio) # 0.1461443
+bh$lstat_tax=bh$lstat*bh$tax # 0.1461674
+
  # 0.1453831
 
 # vars <- c("rm", "lstat", "dis", "nox", "tax", "ptratio", "b", "rad", "indus")
