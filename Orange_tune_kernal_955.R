@@ -72,7 +72,7 @@ rm(BostonHousing2, m.gbm, m.rf, m.svm, pred.list, test, trn,
 data("BostonHousing2")
 bh <- BostonHousing2[,-5]
 levels(bh$town) = c(levels(bh$town), "other")
-bh$town[bh$town %in% names(table(bh$town))[table(bh$town)<19]] <- "other"
+bh$town[bh$town %in% names(table(bh$town))[table(bh$town)<10]] <- "other"
 bh$town <-as.factor(as.character(bh$town))
 
 # bh$crim = log(bh$crim) # 0.1021635
@@ -82,7 +82,7 @@ bh$rm_squre = bh$rm^5
 bh$age_log = log(bh$age)
 bh$dis = 1/bh$dis
 bh$lstat = log(bh$lstat) # 0.1453831
-bh$lstat_square = (bh$lstat)^2
+bh$lstat_square = (bh$lstat)
 # bh$ptratio_log = log(bh$ptratio) 
 bh$ptratio_sqrt = sqrt(bh$ptratio) 
 bh$tax_log = log(bh$tax)
